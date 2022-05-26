@@ -1,0 +1,810 @@
+string_t wolf_action , Hoxton_action , Chains_action , Player_action , Tactic , Primary , Secondary;
+string_t Melee , Throwable , Armor , Deploy , Difficulty , ConfirmUno , ConfirmDos , ConfirmTres , Scout , Mask;
+string_t ArmorConfirm , PrimConf , SecConf, Turn , TargetA,TargetB,TargetC,TargetD,TargetE,TargetF,TargetG,Target;
+int Health , ArmorHealth , Threat , DamagePrime , Range , DamageSegunde , HEUno , HEDos , HETres , HEQuad , DEUno , DEDos , DETres , DEQuad;
+string_t CombatSim,EnemyAlpha,EnemyBeta,EnemyCharlie,EnemyDelta;
+int HP=75;
+int MaxArmor,SM1,SM2,SM3,SM4,x,E1,E2,E3,E4;
+int ConsumedMoves, ArmorRecover;
+int VeryBad , Bags=2 , Pagers=4 , Moves=3 , Unluck , Pellets , FullSquad=4 , Waves, MoveAdd;
+int DamageMultHard=2, DamageMultVHard=4, DamageMultOverkill=6, DamageMultMayhem=8, HealthMultHard=2, HealthMultVHard=4, HealthMultOverkill=6, HealthMultMayhem=8; 
+/* Cloaker Prototype
+*/
+ConfirmUno="No";
+ConfirmDos="No";
+ConfirmTres="No";
+ArmorConfirm="False";
+PrimConf="False";
+SecConf="False";
+Mask="False";
+printf("Welcome to Payday 2, the choose your own adventure version\n","(only comes in diamond store heist)\n","You are Dallas, with your crew Wolf, Hoxton, and Chains. Bain is your old friend who contacts you about a good hit for a place.\n","Your story beguins, with your crew preplanning.\n");
+printf("\"Hey, Dallas, Get your head in the game!\" Bain said through the radio,\n","\"remember, all the display cases in there are connected to an alarm. Disable the alarm and then steal the diamon jewelry.\n","The escape driver is a bit jumpy so keep this quiet and methodical.\n"," Bag up everything. Let's get it all.\n");
+while (ConfirmUno=="No"){
+    printf("What option for gameplay do you select? Normal or CombatSim)\n");
+    scanf("%s",&Difficulty);
+    printf("Confirm? Yes or No\n");
+    scanf("%s",&ConfirmUno);
+}
+printf("\"We're doing this your way, go in loud\" (Utilize Loud or CombatSim exactly for input)\n");
+scanf("%s",&Tactic);
+while (ConfirmDos=="No"){
+    printf("Before you get into your truck, you remember you need your guns, what do you bring?\n","(all silence-able guns are silent for Quiet)\n","(You have a AMCAR rifle, a UAR, a Vulcan Minigun, and a Platypus 70 as your primaries)\n");
+    Threat=0;
+    while (PrimConf=="False"){    
+        scanf("%s",&Primary);
+        if (Primary=="Vulcan Minigun"){
+            Threat=60;
+            PrimConf="True";
+            DamagePrime=4;
+            MoveAdd=4;
+        }
+        if (Primary=="AMCAR"){
+            Threat=10;
+            PrimConf="True";
+            DamagePrime=6;
+        }
+        if (Primary=="UAR"){
+            Threat=15;
+            PrimConf="True";
+            DamagePrime=5;
+            MoveAdd=1;
+        }
+        if (Primary=="Platypus 70"||Primary=="Platypus"){
+            Threat=50;
+            PrimConf="True";
+            DamagePrime=11;
+            MoveAdd=1;
+        }
+        else{
+            printf("Please insert one of the guns above\n");
+        }
+    }
+    printf("Now you will need to grab your secondary, you have a Grimm 12 gauge, a Bronco .44, a Chimano 88, a CMP,\n","and a HRL-7 RPG Launcher.\n");
+    while (SecConf=="False"){    
+        scanf("%s",&Secondary);
+        if (Secondary=="Grimm 12 gauge"){
+            Threat=Threat+20;
+            SecConf="True";
+            DamageSegunde=7;
+        }
+        if (Secondary=="Bronco .44"||Secondary=="Bronco"){
+            Threat=Threat+8;
+            SecConf="True";
+        }
+        if (Secondary=="CMP"){
+            Threat=Threat+13;
+            SecConf="True";
+        }
+        if (Secondary=="Chimano 88"||Secondary=="Chimano"){
+            Threat=Threat+6;
+            SecConf="True";
+        }
+        if (Secondary=="HRL-7 RPG Launcher"||Secondary=="RPG Launcher"||Secondary=="RPG"){
+            Threat=Threat+60;
+            SecConf="True";
+        }
+        else{
+            printf("Please insert one of the guns above\n");
+        }
+    }
+    printf("You now need a throwable, you have a stun grenade (6), frag grenade (3), cards (21), and javelins (3)\n");
+    scanf("%s",&Throwable);
+    printf("You also maybe need some armor, want to get some heavy armor, light armor, or go with a suit?\n","(Heavy, Light, Suit)\n");
+    while (ArmorConfirm=="False"){
+        scanf("%s",&Armor);
+        if (Armor=="Heavy"){
+            Threat=Threat-10;
+            MaxArmor=100;
+            ArmorHealth=100;
+            ArmorConfirm="True";
+        }
+        if (Armor=="Light"){
+            Threat=Threat-20;
+            MaxArmor=55;
+            ArmorHealth=55;
+            ArmorConfirm="True";
+        }
+        if (Armor=="Suit"){
+            Threat=Threat-35;
+            MaxArmor=10;
+            ArmorHealth=10;
+            ArmorConfirm="True";
+        }
+        else{
+            printf("Please insert one of the options from above\n");
+        }
+    }
+    printf("So you are bringing a ",Primary,", a ",Secondary,", and ",Throwable,", that sound good? Yes or No\n");
+    scanf("%s",&ConfirmDos);
+}
+if (Threat>75){
+    Threat=75;
+}
+if (Threat<3);{
+    Threat=3;
+}
+printf("You have ",Threat," detection\n");
+Threat=Threat*1.2;
+if (Difficulty=="Debug" || Difficulty=="God"){
+    printf("Debug is on\n");
+    printf("Your stats are ",Health," Health, ",ArmorHealth," Armor HP, and ",Threat," percent chance for the BAD\n");
+}
+if (Tactic=="CombatSim"){
+    printf("Combat Simulator\n"); // This is Option 1! This is Option 1! This is Option 1! This is Option 1!
+    while (Waves<20){
+    while (FullSquad>0){
+        while (Moves>0){
+            printf("Do you choose to take cover or shoot?(Cover or Attack?)\n");
+            scanf("%s",&Turn);
+            if (Turn=="Attack"){
+                printf("Choose target, A, B, C, or D\n");
+                scanf("%s",&Target);
+                if (Target=="A"&&SM1>0){
+                    HEUno=HEUno-4;
+                    Moves=Moves-1;
+                    printf("The enemy has ",HEUno," HP\n");
+                    if (HEUno<0){
+                        FullSquad=FullSquad-1;
+                        SM1=0;
+                    }
+                    if (FullSquad==0){
+                        Moves=0;
+                        printf("The squad is dead\n");
+                    }
+                }
+                if (Target=="B"&&SM2>0){
+                    HEDos=HEDos-4;
+                    Moves=Moves-1;
+                    printf("The enemy has ",HEUno," HP\n");
+                    if (HEDos<0){
+                        FullSquad=FullSquad-1;
+                        SM2=0;
+                    }
+                    if (FullSquad==0){
+                        Moves=0;
+                        printf("The squad is dead\n");
+                    }
+                }
+                if (Target=="C"&&SM3>0){
+                    HETres=HETres-4;
+                    Moves=Moves-1;
+                    printf("The enemy has ",HEUno," HP\n");
+                    if (HETres<0){
+                        FullSquad=FullSquad-1;
+                        SM3=0;
+                    }
+                    if (FullSquad==0){
+                        Moves=0;
+                        printf("The squad is dead\n");
+                    }
+                }
+                if (Target=="D"&&SM4>0){
+                    HEQuad=HEQuad-4;
+                    Moves=Moves-1;
+                    printf("The enemy has ",HEUno," HP\n");
+                    if (HEQuad<0){
+                        FullSquad=FullSquad-1;
+                        SM4=0;
+                    }
+                    if (FullSquad==0){
+                        Moves=0;
+                        printf("The squad is dead\n");
+                    }
+                }
+            }
+            if (Turn=="Cover"){
+                ConsumedMoves=4*Moves;
+                Moves=0;
+                ArmorHealth=ArmorHealth+ConsumedMoves;
+                ConsumedMoves=0;
+                if (MaxArmor<ArmorHealth){
+                    ArmorHealth=MaxArmor;
+                }
+            }
+            
+        }
+        if (SM1>0){
+            if (ArmorHealth>0){
+                ArmorHealth=ArmorHealth-DEUno;
+            }
+            if (ArmorHealth<0){
+                HP=HP-DEUno;
+            }
+        }
+        if (SM2>0){
+            if (ArmorHealth>0){
+                ArmorHealth=ArmorHealth-DEDos;
+            }
+            if (ArmorHealth<0){
+                HP=HP-DEDos;
+            }
+        }
+        if (SM3>0){
+            if (ArmorHealth>0){
+                ArmorHealth=ArmorHealth-DETres;
+            }
+            if (ArmorHealth<0){
+                HP=HP-DETres;
+            }
+        }
+        if (SM4>0){
+            if (ArmorHealth>0){
+                ArmorHealth=ArmorHealth-DEQuad;
+            }
+            if (ArmorHealth<0){
+                HP=HP-DEQuad;
+            }
+        }
+        if (HP<0){
+            printf("G A M E   O V E R\n");
+            break;
+        }
+        if (FullSquad==0){
+            printf("1 wave has been finished, time for Wave",Waves,"\n");
+            HEUno=5;
+            HEDos=5;
+            HETres=5;
+            HEQuad=5;
+            DEUno=2;
+            DEDos=2;
+            DETres=2;
+            DEQuad=2;
+            SM1=1;
+            SM2=1;
+            SM3=1;
+            SM4=1;
+        }
+        x=x+1;
+        printf("Turn ",x,", start!\n");
+        Moves=3;
+        printf("You have ",HP," HP and ",Armor," Armor\n");
+    }
+}
+if (HP<0){
+    printf("G A M E   O V E R\n");
+}
+if (HP>0&& Waves>20){
+    printf("You Win!\n"); 
+}
+E1=randint(1,21); //Cop(6),Swat(6),Heavy Swat(5),Cloaker(3),Tazer(4),Dozer(3)[spawn 2],Captain Winters(1),Shield(4) [8]
+E2=randint(1,21);
+E3=randint(1,21);
+E4=randint(1,21);
+if (E1>=1&&E1<7){
+    HEUno=5;
+    DEUno=2;
+    SM1=1;
+    EnemyAlpha="Cop";
+}
+if (E1>=7&&E1<13){
+    HEUno=5;
+    DEUno=2;
+    SM1=1;
+    EnemyAlpha="Swat";
+}
+if (E1>=13&&E1<18){
+    HEUno=5;
+    DEUno=2;
+    SM1=1;
+    EnemyAlpha="Heavy Swat";
+}
+if (E1>=18&&E1<21){
+    HEUno=5;
+    DEUno=2;
+    SM1=1;
+    EnemyAlpha="Cloaker";
+}
+if (E2>=1&&E2<7){
+    HEDos=5;
+    DEDos=2;
+    SM2=1;
+    EnemyBeta="Cop";
+}
+if (E2>=7&&E2<13){
+    HEDos=5;
+    DEDos=2;
+    SM2=1;
+    EnemyBeta="Swat";
+}
+if (E2>=13&&E2<18){
+    HEDos=5;
+    DEDos=2;
+    SM2=1;
+    EnemyBeta="Heavy Swat";
+}
+if (E2>=18&&E2<21){
+    HEUno=5;
+    DEUno=2;
+    SM1=1;
+    EnemyBeta="Cloaker";
+}
+if (E3>=1&&E3<7){
+    HETres=5;
+    DETres=2;
+    SM3=1;
+    EnemyCharlie="Cop";
+}
+if (E3>=7&&E3<13){
+    HETres=5;
+    DETres=2;
+    SM3=1;
+    EnemyCharlie="Swat";
+}
+if (E3>=13&&E3<18){
+    HETres=5;
+    DETres=2;
+    SM3=1;
+    EnemyCharlie="Heavy Swat";
+}
+if (E3>=18&&E3<21){
+    HETres=5;
+    DETres=2;
+    SM3=1;
+    EnemyCharlie="Cloaker";
+}
+if (E4>=1&&E4<7){
+    HEQuad=5;
+    DEQuad=2;
+    SM4=1;
+    EnemyDelta="Cop";
+}
+if (E4>=7&&E4<13){
+    HEQuad=5;
+    DEQuad=2;
+    SM4=1;
+    EnemyDelta="Swat";
+}
+if (E4>=13&&E4<18){
+    HEQuad=5;
+    DEQuad=2;
+    SM4=1;
+    EnemyCharlie="Heavy Swat";
+}
+if (E3>=18&&E3<21){
+    HEQuad=5;
+    DEQuad=2;
+    SM4=1;
+    EnemyDelta="Cloaker";
+}
+}
+if (Tactic=="Loud"){ // This is Option 2! This is Option 2! This is Option 2! This is Option 2! This is Option 2!
+    if (Primary=="Vulcan Minigun" && Secondary=="HRL-7 RPG Launcher"){
+        printf("\nAchievement get; Madman\n\n");
+    }
+    printf("You and your gang get into your truck, and set off to the diamond store\n");
+    VeryBad=randint(1,7);
+    sleep(VeryBad);
+    printf("...");
+    VeryBad=randint(1,7);
+    sleep(VeryBad);
+    printf("You arrive at the store, you can scout the area, or put on your mask\n","(NOTE, YOU CAN NOT UNMASK, THIS WILL START THE HEIST)\n","Start or Scout?\n");
+    scanf("%s",&Scout);
+    while (Mask=="False"){
+        if (Scout=="Scout" || Scout=="Back"){
+            printf("You can go the alley in the left, look inside, or go to the car shop to the right (Left, Inside, Car)\n");
+            scanf("%s",&Scout);
+            if (Scout=="Left"){
+                while (Scout=="Left"){
+                    printf("You are in the alley. You notice a security room on your right. It would be strange to lockpick\n","it while you dont have your mask on, so do you want to put it on and lockpick in?\n","You could also head to the back of the building(Forward, Back, or Mask)\n");
+                    scanf("%s",&Scout);
+                    if (Scout=="Mask"){
+                        Scout="MaskAlley";
+                        Mask="True";
+                        break;
+                        
+                    }
+                    if (Scout=="Forward"){
+                        while (Scout=="Forward"){
+                            printf("You walk into an open area, civilians everywhere and a stairway to the right leading into the building.\n","Where do you want to go?(Right or BackLeft)\n");
+                            scanf("%s",&Scout);
+                            if (Scout=="Right"){
+                                printf("You go up the stairs, you are now in front of the staff only door\n","you could go back or mask up?(Forward(back), Mask)\n");
+                                scanf("%s",&Scout);
+                            }
+                        }
+                    }
+                }
+            }
+            if (Scout=="Inside"){
+                printf("You see a camera to your left, about in the middle of the wall.\n","Probably manned by a guy in a security room. There is also 2 guards in the room. want to start?(Back or Mask)\n");
+                scanf("%s",&Scout);
+            }
+            
+        }
+    } 
+    if (Scout=="MaskAlley"){
+        printf("You put on your mask and start to lockpick.\n");
+        Mask="True";
+        VeryBad=randint(1,100);
+        if (VeryBad<Threat){
+            Unluck=Unluck+1;
+            printf("You open the door, and there is a guard standing there! Do you shoot him or melee him?\n"," (Shoot or Melee)\n");
+            scanf("%s",&Scout);
+            if (Scout=="Shoot"){
+                printf("You shoot the guard, he's obviously dead,");
+                printf("but the gunshot was heard throughout the building, some civilians call the police.\n","\"Alright, the cops have been called, time to work!\" you hear Bain say, do you go downstairs or stay(Down or Stay)\n");
+                scanf("%s",&Scout);
+                if (Scout=="Down"){
+                    printf("You decided to go downstairs to the main lobby, it's showtime;\n","2 cop cars show up, you pull out you ",Primary," and prepare to fire.\n");
+                    if (Difficulty=="Normal"){
+                        HEUno=5;
+                        HEDos=5;
+                        HETres=5;
+                        HEQuad=5;
+                        DEUno=2;
+                        DEDos=2;
+                        DETres=2;
+                        DEQuad=2;
+                        
+                        printf("(tutorial on combat, type 'Yes' to go through the tutorial)\n");
+                        scanf("%s",&Turn);
+                        if (Turn=="Yes"){
+                            printf("So there are 4 cops, cop A,B,C,& D, the enemy types will be next the the letter\n","Example:(Cop A, Tazer C, CW G)\n");
+                            printf("You type down your choice of who to shoot\n","you can attack 3 enemies in 1 turn (depending on the gun, so the Minigun has 4 extra 'attacks')\n","Melee striking an enemy takes 2 'attacks'\n");
+                            printf("The commands for your turn is 'Attack' and 'Cover'\n");
+                            printf("Attack is to shoot someone, but consumes ammo for 'attack' shot\n","Cover is to forfit remaining attacks, but recieving armor equivilant to 4*remaining 'attacks'\n");
+                            printf("Try to defeat the 4 cops\n");
+                            scanf("%s",&Player_action);
+                            while (Waves<1){
+                                while (FullSquad>0){
+                                    while (Moves>0){
+                                        printf("Do you choose to take cover or shoot?(Cover or Attack?)\n");
+                                        scanf("%s",&Turn);
+                                        if (Turn=="Attack"){
+                                            printf("Choose target, A, B, C, or D\n");
+                                            scanf("%s",&Target);
+                                            if (Target=="A"&&SM1>0){
+                                                HEUno=HEUno-4;
+                                                Moves=Moves-1;
+                                                printf("The enemy has ",HEUno," HP\n");
+                                                if (HEUno<0){
+                                                    FullSquad=FullSquad-1;
+                                                    SM1=0;
+                                                }
+                                                if (FullSquad==0){
+                                                    Moves=0;
+                                                    printf("The squad is dead\n");
+                                                }
+                                            }
+                                            if (Target=="B"&&SM2>0){
+                                                HEDos=HEDos-4;
+                                                Moves=Moves-1;
+                                                printf("The enemy has ",HEUno," HP\n");
+                                                if (HEDos<0){
+                                                    FullSquad=FullSquad-1;
+                                                    SM2=0;
+                                                }
+                                                if (FullSquad==0){
+                                                    Moves=0;
+                                                    printf("The squad is dead\n");
+                                                }
+                                            }
+                                            if (Target=="C"&&SM3>0){
+                                                HETres=HETres-4;
+                                                Moves=Moves-1;
+                                                printf("The enemy has ",HEUno," HP\n");
+                                                if (HETres<0){
+                                                    FullSquad=FullSquad-1;
+                                                    SM3=0;
+                                                }
+                                                if (FullSquad==0){
+                                                    Moves=0;
+                                                    printf("The squad is dead\n");
+                                                }
+                                            }
+                                            if (Target=="D"&&SM4>0){
+                                                HEQuad=HEQuad-4;
+                                                Moves=Moves-1;
+                                                printf("The enemy has ",HEUno," HP\n");
+                                                if (HEQuad<0){
+                                                    FullSquad=FullSquad-1;
+                                                    SM4=0;
+                                                }
+                                                if (FullSquad==0){
+                                                    Moves=0;
+                                                    printf("The squad is dead\n");
+                                                }
+                                            }
+                                        }
+                                        if (Turn=="Cover"){
+                                            ConsumedMoves=4*Moves;
+                                            Moves=0;
+                                            ArmorHealth=ArmorHealth+ConsumedMoves;
+                                            ConsumedMoves=0;
+                                            printf("You recovered all armor\n");
+                                            if (MaxArmor<ArmorHealth){
+                                                ArmorHealth=MaxArmor;
+                                                printf("You are at max armor\n");
+                                            }
+                                        }
+                                        
+                                    }
+                                    printf("It is now time for the enemies attack phase\n","every enemy that is alive will hit you for their apropriate damage value.\n");
+                                    if (SM1>0){
+                                        if (ArmorHealth>0){
+                                            ArmorHealth=ArmorHealth-DEUno;
+                                        }
+                                        if (ArmorHealth<0){
+                                            HP=HP-DEUno;
+                                        }
+                                    }
+                                    if (SM2>0){
+                                        if (ArmorHealth>0){
+                                            ArmorHealth=ArmorHealth-DEDos;
+                                        }
+                                        if (ArmorHealth<0){
+                                            HP=HP-DEDos;
+                                        }
+                                    }
+                                    if (SM3>0){
+                                        if (ArmorHealth>0){
+                                            ArmorHealth=ArmorHealth-DETres;
+                                        }
+                                        if (ArmorHealth<0){
+                                            HP=HP-DETres;
+                                        }
+                                    }
+                                    if (SM4>0){
+                                        if (ArmorHealth>0){
+                                            ArmorHealth=ArmorHealth-DEQuad;
+                                        }
+                                        if (ArmorHealth<0){
+                                            HP=HP-DEQuad;
+                                        }
+                                    }
+                                    if (HP<0){
+                                        printf("G A M E   O V E R\n");
+                                        break;
+                                    }
+                                    if (FullSquad==0){
+                                        printf("You have beat all 4 cops, great!\n","now, it is time to beat it, survive 3 waves to beat the game.\n");
+                                    }
+                                    printf("You have ",HP," HP and ",Armor," Armor\n");
+                                }
+                            }
+                            if (HP<0){
+                                printf("G A M E   O V E R\n");
+                            }
+                            if (HP>0&& Waves>1){
+                                printf("Off the tutorial now!\n"); 
+                            }
+                        }
+                        else{
+                            while (Waves<3){
+    while (FullSquad>0){
+        while (Moves>0){
+            printf("Do you choose to take cover or shoot?(Cover or Attack?)\n");
+            scanf("%s",&Turn);
+            if (Turn=="Attack"){
+                printf("Choose target, A, B, C, or D\n");
+                scanf("%s",&Target);
+                if (Target=="A"&&SM1>0){
+                    HEUno=HEUno-4;
+                    Moves=Moves-1;
+                    printf("The enemy has ",HEUno," HP\n");
+                    if (HEUno<0){
+                        FullSquad=FullSquad-1;
+                        SM1=0;
+                    }
+                    if (FullSquad==0){
+                        Moves=0;
+                        printf("The squad is dead\n");
+                    }
+                }
+                if (Target=="B"&&SM2>0){
+                    HEDos=HEDos-4;
+                    Moves=Moves-1;
+                    printf("The enemy has ",HEUno," HP\n");
+                    if (HEDos<0){
+                        FullSquad=FullSquad-1;
+                        SM2=0;
+                    }
+                    if (FullSquad==0){
+                        Moves=0;
+                        printf("The squad is dead\n");
+                    }
+                }
+                if (Target=="C"&&SM3>0){
+                    HETres=HETres-4;
+                    Moves=Moves-1;
+                    printf("The enemy has ",HEUno," HP\n");
+                    if (HETres<0){
+                        FullSquad=FullSquad-1;
+                        SM3=0;
+                    }
+                    if (FullSquad==0){
+                        Moves=0;
+                        printf("The squad is dead\n");
+                    }
+                }
+                if (Target=="D"&&SM4>0){
+                    HEQuad=HEQuad-4;
+                    Moves=Moves-1;
+                    printf("The enemy has ",HEUno," HP\n");
+                    if (HEQuad<0){
+                        FullSquad=FullSquad-1;
+                        SM4=0;
+                    }
+                    if (FullSquad==0){
+                        Moves=0;
+                        printf("The squad is dead\n");
+                    }
+                }
+            }
+            if (Turn=="Cover"){
+                ConsumedMoves=4*Moves;
+                Moves=0;
+                ArmorHealth=ArmorHealth+ConsumedMoves;
+                ConsumedMoves=0;
+                if (MaxArmor<ArmorHealth){
+                    ArmorHealth=MaxArmor;
+                }
+            }
+            
+        }
+        if (SM1>0){
+            if (ArmorHealth>0){
+                ArmorHealth=ArmorHealth-DEUno;
+            }
+            if (ArmorHealth<0){
+                HP=HP-DEUno;
+            }
+        }
+        if (SM2>0){
+            if (ArmorHealth>0){
+                ArmorHealth=ArmorHealth-DEDos;
+            }
+            if (ArmorHealth<0){
+                HP=HP-DEDos;
+            }
+        }
+        if (SM3>0){
+            if (ArmorHealth>0){
+                ArmorHealth=ArmorHealth-DETres;
+            }
+            if (ArmorHealth<0){
+                HP=HP-DETres;
+            }
+        }
+        if (SM4>0){
+            if (ArmorHealth>0){
+                ArmorHealth=ArmorHealth-DEQuad;
+            }
+            if (ArmorHealth<0){
+                HP=HP-DEQuad;
+            }
+        }
+        if (HP<0){
+            printf("G A M E   O V E R\n");
+            break;
+        }
+        if (FullSquad==0){
+            Waves=Waves+1;
+            printf("A wave has been finished, time for Wave",Waves,"\n");
+            
+        }
+        x=x+1;
+        printf("Turn ",x,", start!\n");
+        Moves=3;
+        printf("You have ",HP," HP and ",Armor," Armor\n");
+    }
+}
+if (HP<0){
+    printf("G A M E   O V E R\n");
+}
+if (HP>0&& Waves>20){
+    printf("You Win!\n"); 
+}
+}
+if (HP<0){
+    printf("G A M E   O V E R\n");
+}
+if (HP>0&& Waves>20){
+    printf("You Win!\n"); 
+}
+E1=randint(1,21); //Cop(6),Swat(6),Heavy Swat(5),Cloaker(3),Tazer(4),Dozer(3)[spawn 2],Captain Winters(1),Shield(4) [8]
+E2=randint(1,21);
+E3=randint(1,21);
+E4=randint(1,21);
+if (E1>=1&&E1<7){
+    HEUno=5;
+    DEUno=2;
+    SM1=1;
+    EnemyAlpha="Cop";
+}
+if (E1>=7&&E1<13){
+    HEUno=5;
+    DEUno=2;
+    SM1=1;
+    EnemyAlpha="Swat";
+}
+if (E1>=13&&E1<18){
+    HEUno=5;
+    DEUno=2;
+    SM1=1;
+    EnemyAlpha="Heavy Swat";
+}
+if (E1>=18&&E1<21){
+    HEUno=5;
+    DEUno=2;
+    SM1=1;
+    EnemyAlpha="Cloaker";
+}
+if (E2>=1&&E2<7){
+    HEDos=5;
+    DEDos=2;
+    SM2=1;
+    EnemyBeta="Cop";
+}
+if (E2>=7&&E2<13){
+    HEDos=5;
+    DEDos=2;
+    SM2=1;
+    EnemyBeta="Swat";
+}
+if (E2>=13&&E2<18){
+    HEDos=5;
+    DEDos=2;
+    SM2=1;
+    EnemyBeta="Heavy Swat";
+}
+if (E2>=18&&E2<21){
+    HEUno=5;
+    DEUno=2;
+    SM1=1;
+    EnemyBeta="Cloaker";
+}
+if (E3>=1&&E3<7){
+    HETres=5;
+    DETres=2;
+    SM3=1;
+    EnemyCharlie="Cop";
+}
+if (E3>=7&&E3<13){
+    HETres=5;
+    DETres=2;
+    SM3=1;
+    EnemyCharlie="Swat";
+}
+if (E3>=13&&E3<18){
+    HETres=5;
+    DETres=2;
+    SM3=1;
+    EnemyCharlie="Heavy Swat";
+}
+if (E3>=18&&E3<21){
+    HETres=5;
+    DETres=2;
+    SM3=1;
+    EnemyCharlie="Cloaker";
+}
+if (E4>=1&&E4<7){
+    HEQuad=5;
+    DEQuad=2;
+    SM4=1;
+    EnemyDelta="Cop";
+}
+if (E4>=7&&E4<13){
+    HEQuad=5;
+    DEQuad=2;
+    SM4=1;
+    EnemyDelta="Swat";
+}
+if (E4>=13&&E4<18){
+    HEQuad=5;
+    DEQuad=2;
+    SM4=1;
+    EnemyCharlie="Heavy Swat";
+}
+if (E3>=18&&E3<21){
+    HEQuad=5;
+    DEQuad=2;
+    SM4=1;
+    EnemyDelta="Cloaker";
+}                
+}
+}
+}
+}
+}
+}
